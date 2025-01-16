@@ -1,0 +1,16 @@
+audioop-lts==0.2.1
+comtypes==1.4.9
+mpmath==1.3.0
+numpy==2.2.1
+opencv-python==4.10.0.84
+PyAudio==0.2.14
+pygame==2.6.1
+pyjokes==0.8.3
+pypiwin32==223
+pyttsx3==2.98
+pywin32==308
+SpeechRecognition==3.14.0
+standard-aifc==3.13.0
+standard-chunk==3.13.0
+sympy==1.13.3
+typing_extensions==4.12.2
