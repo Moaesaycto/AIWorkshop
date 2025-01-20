@@ -105,7 +105,7 @@ WINDOW_WIDTH = MAP_WIDTH
 WINDOW_HEIGHT = MAP_HEIGHT
 
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption("AI Demo with Wandering Enemies")
+pygame.display.set_caption("Game With AI Demonstration")
 clock = pygame.time.Clock()
 
 font = pygame.font.SysFont("arial", 20, bold=True)
@@ -280,20 +280,25 @@ class Bullet:
 
         self.old_x = x
         self.old_y = y
-    
-    def update(self, dt, enemies, explosions):
+
+    def update(self, dt, enemies, explosions, grid):
         # store old position
         self.old_x, self.old_y = self.x, self.y
         
         dist = self.speed_px * dt
         self.x += self.dir_c * dist
         self.y += self.dir_r * dist
+
+        # Check collision with walls
+        if self.will_collide_with_wall(grid):
+            self.alive = False
+            return
         
         self.lifetime -= dt
         if self.lifetime <= 0:
             self.alive = False
             return
-        
+
         # out-of-bounds?
         if (self.x < 0 or self.x > MAP_WIDTH or
             self.y < 0 or self.y > MAP_HEIGHT):
@@ -313,6 +318,15 @@ class Bullet:
                     explosion_sound.play()
                     self.alive = False
                     return
+
+    def will_collide_with_wall(self, grid):
+        """
+        Check if the bullet collides with any wall tile.
+        """
+        bullet_tile_r, bullet_tile_c = get_tile_from_xy(self.x, self.y)
+        if in_bounds(bullet_tile_r, bullet_tile_c) and grid[bullet_tile_r][bullet_tile_c] == 1:
+            return True
+        return False
 
     def draw(self, surface):
         pygame.draw.circle(surface, YELLOW, (int(self.x), int(self.y)), 4)
@@ -616,7 +630,7 @@ def main():
             
             # Bullets
             for b in bullets:
-                b.update(dt, enemies, explosions)
+                b.update(dt, enemies, explosions, grid)
             bullets = [b for b in bullets if b.alive]
             
             # Enemies
