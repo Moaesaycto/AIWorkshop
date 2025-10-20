@@ -1,10 +1,26 @@
-# README
+# AI Workshop Demonstrations
 
-## Introduction
+**Type:** Python Scripts · **Tech Stack:** Python, OpenCV, PyAudio, Pygame, SpeechRecognition, NumPy · **Year:** 2025
 
-Welcome! This guide will walk you through installing Python, setting up a virtual environment, installing required dependencies, and running the included Python files. Even if you have never written a single line of code before, these instructions should help you get started.
+## **Overview**
 
-## 1. Install Python
+A collection of interactive Python demos showcasing AI concepts applied to small, creative projects. These scripts highlight real-time perception, decision-making, and user interaction using simple yet effective AI techniques.
+
+## **Key Demonstrations**
+
+* **Red Light, Green Light:** Camera-based motion detection game that eliminates players who move when they should not.
+* **Smart Enemy AI:** A simulated opponent with visual awareness and pathfinding abilities that chases the player.
+* **Voice Assistant:** A minimal speech-controlled assistant capable of responding to spoken commands.
+
+## **Purpose**
+
+This project demonstrates my ability to integrate computer vision, audio processing, and game logic into interactive prototypes — bridging AI concepts with practical, engaging applications.
+
+---
+
+## Setup Instructions
+
+### 1. Install Python
 
 1. **Go to the Python website**: [https://www.python.org/downloads/](https://www.python.org/downloads/)
 2. **Download Python**:
@@ -28,7 +44,7 @@ If it shows something like `Python 3.x.x`, you’re good to go!
 
 ---
 
-## 2. Set Up a Virtual Environment
+### 2. Set Up a Virtual Environment
 
 A **virtual environment** allows you to create a separate, isolated space on your computer just for this project’s dependencies. This way, you don’t clutter your main system with project-specific packages.
 
@@ -61,7 +77,7 @@ When the virtual environment is activated, you’ll usually see `(venv)` (or sim
 
 ---
 
-## 3. Install Dependencies
+### 3. Install Dependencies
 
 In this repository, there should be a file named `requirements.txt`. This file lists all the additional Python packages you need to run the included programs.
 
@@ -74,7 +90,7 @@ In this repository, there should be a file named `requirements.txt`. This file l
 
 ---
 
-## 4. Run the Programs
+### 4. Run the Programs
 
 There are three Python scripts in this repository:
 
@@ -112,7 +128,7 @@ deactivate
 
 ---
 
-## 6. Troubleshooting
+### 6. Troubleshooting
 
 - If you type `python` and get an error like **`command not found`**, Python may not be installed correctly or may not be on your system’s PATH. See the instructions below.
 - If you’re on Windows and the `activate` command fails, ensure you are using the correct path (`venv\Scripts\activate`) and not `venv/bin/activate`.
@@ -120,7 +136,7 @@ deactivate
 
 ---
 
-## 7. PATH Variable Issue
+### 7. PATH Variable Issue
 
 You may have some trouble when running the `python` command on Windows. If this is applies to you, follow the instructions below.
 
