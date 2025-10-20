@@ -14,7 +14,7 @@ A collection of interactive Python demos showcasing AI concepts applied to small
 
 ## **Purpose**
 
-This project demonstrates my ability to integrate computer vision, audio processing, and game logic into interactive prototypes — bridging AI concepts with practical, engaging applications.
+This project demonstrates my ability to integrate computer vision, audio processing, and game logic into interactive prototypes; bridging AI concepts with practical, engaging applications.
 
 ---
 
