@@ -4,9 +4,12 @@ import time
 import pygame
 import random
 
-# ===========================
-# ===== CONFIGURATIONS ======
-# ===========================
+# -----------------------------------------------------------------------------
+# PLEASE READ BEFORE YOU EDIT!
+# This code has been written for a course in AI. Try not to change anything
+# except for the parameters listed below. If you know what you're doing, then
+# feel free to change the rest of the code!
+# -----------------------------------------------------------------------------
 CAMERA_MODE = False  # True = Demo Mode (no game logic), False = Actual Game Mode
 
 # Game parameters
@@ -19,9 +22,6 @@ RED_LIGHT_DURATION = 5
 GRACE_RED = 0.7
 PREPARATION_TIME = 10  # Time to wait during the preparation phase
 
-# ===========================
-# ===== INITIAL SETUP =======
-# ===========================
 pygame.mixer.init()
 pygame.mixer.music.load('./assets/greenlight.mp3')
 redlight_sound = pygame.mixer.Sound('./assets/redlight.mp3')
@@ -39,27 +39,18 @@ def game_loop():
     # Background subtractor
     fgbg = cv2.createBackgroundSubtractorMOG2(history=5, varThreshold=SENSITIVITY_THRESHOLD)
 
-    # ===========================
-    # === Window / Layout Setup =
-    # ===========================
-    # Create a full-screen window
     cv2.namedWindow("Game Window", cv2.WND_PROP_FULLSCREEN)
     cv2.setWindowProperty("Game Window", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
-    # You can adjust these if your system’s screen is different or if you want a smaller window
+    # Dimensions: Feel free to change if you really care to
     screen_width = 1920
     screen_height = 1080
 
-    # We'll reserve a "title bar" at the top for text (time left, game state, or "Demo Mode").
     title_bar_height = 120
-    # The remaining area will be used for the 2×2 grid
     grid_height = screen_height - title_bar_height
     cell_width = screen_width // 2
     cell_height = grid_height // 2
 
-    # ===========================
-    # ===== Game State Vars =====
-    # ===========================
     game_active = False
     game_over = False
     game_state = "Idle"
@@ -77,10 +68,7 @@ def game_loop():
             break
 
         # Create the top title bar
-        # We'll fill it with a dark background (e.g., grey) so white text is visible
         title_bar = np.full((title_bar_height, screen_width, 3), (30, 30, 30), dtype=np.uint8)
-
-        # Perform detection in both modes (so that Foreground Mask & Detection Overlay are meaningful)
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blurred_frame = cv2.GaussianBlur(gray_frame, (5, 5), 0)
         fgmask = fgbg.apply(blurred_frame)
@@ -91,58 +79,35 @@ def game_loop():
         detection_display = frame.copy()
         cv2.drawContours(detection_display, contours, -1, (0, 0, 255), 2)
 
-        # --- Resize camera frames for the 2x2 grid ---
+        # 2x2 camera layout
         frame_resized = cv2.resize(frame, (cell_width, cell_height))
         fgmask_bgr = cv2.cvtColor(fgmask, cv2.COLOR_GRAY2BGR)
         fgmask_resized = cv2.resize(fgmask_bgr, (cell_width, cell_height))
         detection_resized = cv2.resize(detection_display, (cell_width, cell_height))
-
-        # By default, let's keep the bottom-right cell black (or some neutral color)
         bottom_right_cell = np.zeros((cell_height, cell_width, 3), dtype=np.uint8)
 
-        # ===========================
-        # == CAMERA MODE (Demo) ====
-        # ===========================
         if CAMERA_MODE:
-            # 1) Title bar just says "Demo Mode"
             cv2.putText(title_bar, "Demo Mode", (50, 80),
                         cv2.FONT_HERSHEY_SIMPLEX, 2.0, (255, 255, 255), 4, cv2.LINE_AA)
 
-            # 2) 2×2 grid: top-left = camera, top-right = fgmask, bottom-left = detection overlay,
-            #    bottom-right = black
             top_row = np.hstack([frame_resized, fgmask_resized])
             bottom_row = np.hstack([detection_resized, bottom_right_cell])
             grid = np.vstack([top_row, bottom_row])
-
-            # Combine the title bar on top and the grid below
             combined_frame = np.vstack([title_bar, grid])
-
-            # Show
             cv2.imshow("Game Window", combined_frame)
 
-        # ===========================
-        # == GAME MODE (RLGL)  =====
-        # ===========================
         else:
-            # If not in camera mode, we run the RLGL game
-            # total_movement => sum of contour areas
             total_movement = sum(cv2.contourArea(c) for c in contours)
 
-            # If the game is active, handle logic
             if game_active:
-                # Preparation phase
                 if game_state == "Preparation":
                     print("Preparation phase started.")
                     preparation_sound.play()
                     prep_start_time = time.time()
 
                     while time.time() - prep_start_time < PREPARATION_TIME:
-                        # Countdown left
                         remaining_prep_time = PREPARATION_TIME - int(time.time() - prep_start_time)
-
-                        # Show the 2×2 grid as black except maybe the camera feed if you prefer
                         black_panel = np.zeros((cell_height, cell_width, 3), dtype=np.uint8)
-                        # Bottom-right cell can be a "waiting" grey
                         waiting_cell = np.full((cell_height, cell_width, 3), (50, 50, 50), dtype=np.uint8)
 
                         # Title bar showing "PREPARATION"
@@ -151,7 +116,7 @@ def game_loop():
                                     (50, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.5, 
                                     (255, 255, 255), 3, cv2.LINE_AA)
 
-                        # Build the grid (camera feed optional; let's keep black for clarity)
+                        # Build the grid (camera feed optional)
                         top_row = np.hstack([black_panel, black_panel])
                         bottom_row = np.hstack([black_panel, waiting_cell])
                         grid = np.vstack([top_row, bottom_row])
@@ -164,7 +129,7 @@ def game_loop():
                             cv2.destroyAllWindows()
                             return
 
-                    # After preparation, switch to Green Light
+                    # After prep, switch to Green Light
                     print("Preparation phase over. Game starting!")
                     pygame.mixer.music.play()
                     game_state = "Green Light"
@@ -209,15 +174,12 @@ def game_loop():
                             print("RED LIGHT! Stop moving.")
 
                 # Update the title bar with game state & time
-                # E.g. "State: Green Light | Time Left: XXs"
-                # If game over, it will revert to "Idle" eventually, so you can reflect that up top as well
                 title_str = f"State: {game_state} | Time Left: {max(0, GAME_TIMER - int(elapsed_time))}s"
                 cv2.putText(title_bar, title_str, (50, 80),
                             cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4, cv2.LINE_AA)
 
             else:
-                # Game inactive (Idle or Over)
-                # Title bar says either "Idle - Press R to Start" or "Game Over - Press R to Restart"
+                # Game inactive (Idle/Over)
                 if game_over:
                     title_text = "Game Over - Press R to Restart"
                 else:
@@ -226,18 +188,15 @@ def game_loop():
                 cv2.putText(title_bar, title_text, (50, 80),
                             cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 4, cv2.LINE_AA)
 
-            # Build the final 2×2 grid in game mode
+            # Build the final 2x2 grid in game mode
             top_row = np.hstack([frame_resized, fgmask_resized])
             bottom_row = np.hstack([detection_resized, bottom_right_cell])
             grid = np.vstack([top_row, bottom_row])
 
-            # Combine the title bar + grid
+            # Combine the title bar and grid
             combined_frame = np.vstack([title_bar, grid])
             cv2.imshow("Game Window", combined_frame)
 
-        # ===========================
-        # ===== Key Handling ========
-        # ===========================
         key = cv2.waitKey(1) & 0xFF
         if key == 27:  # ESC to quit
             print("Exiting...")
@@ -265,8 +224,5 @@ def game_loop():
     cap.release()
     cv2.destroyAllWindows()
 
-# ===========================
-# ========= RUNNER ==========
-# ===========================
 if __name__ == "__main__":
     game_loop()
