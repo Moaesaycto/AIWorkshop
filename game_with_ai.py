@@ -8,7 +8,10 @@ from collections import deque
 pygame.init()
 
 # -----------------------------------------------------------------------------
-# CONFIGURATION
+# PLEASE READ BEFORE YOU EDIT!
+# This code has been written for a course in AI. Try not to change anything
+# except for the parameters listed below. If you know what you're doing, then
+# feel free to change the rest of the code!
 # -----------------------------------------------------------------------------
 CONFIG = {
     # Movement / timing
@@ -43,9 +46,6 @@ CONFIG = {
     "PARTICLE_SPEED_MAX": 150,    # px/s
 }
 
-# -----------------------------------------------------------------------------
-# CUSTOM MAP (1=wall, 2=coin, 3=ammo)
-# -----------------------------------------------------------------------------
 CUSTOM_MAP = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,3,1],
@@ -69,32 +69,25 @@ CUSTOM_MAP = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
 
-# -----------------------------------------------------------------------------
-# LOAD SOUNDS (assuming they're in ./assets/ )
-# -----------------------------------------------------------------------------
 try:
-    shoot_sound     = pygame.mixer.Sound("./assets/shoot.mp3")
-    empty_sound     = pygame.mixer.Sound("./assets/empty.mp3")
-    coin_sound      = pygame.mixer.Sound("./assets/coin.mp3")
-    ammo_sound      = pygame.mixer.Sound("./assets/ammo.mp3")
-    win_sound       = pygame.mixer.Sound("./assets/win.mp3")
-    lose_sound      = pygame.mixer.Sound("./assets/lose.mp3")
-    start_sound     = pygame.mixer.Sound("./assets/preparation.mp3")
+    shoot_sound = pygame.mixer.Sound("./assets/shoot.mp3")
+    empty_sound = pygame.mixer.Sound("./assets/empty.mp3")
+    coin_sound = pygame.mixer.Sound("./assets/coin.mp3")
+    ammo_sound = pygame.mixer.Sound("./assets/ammo.mp3")
+    win_sound = pygame.mixer.Sound("./assets/win.mp3")
+    lose_sound = pygame.mixer.Sound("./assets/lose.mp3")
+    start_sound = pygame.mixer.Sound("./assets/preparation.mp3")
     explosion_sound = pygame.mixer.Sound("./assets/explosion.mp3")
 except:
-    # If files don't exist or error, create dummy Sounds to avoid crashes
-    shoot_sound     = pygame.mixer.Sound(file=None)
-    empty_sound     = pygame.mixer.Sound(file=None)
-    coin_sound      = pygame.mixer.Sound(file=None)
-    ammo_sound      = pygame.mixer.Sound(file=None)
-    win_sound       = pygame.mixer.Sound(file=None)
-    lose_sound      = pygame.mixer.Sound(file=None)
-    start_sound     = pygame.mixer.Sound(file=None)
+    shoot_sound = pygame.mixer.Sound(file=None)
+    empty_sound = pygame.mixer.Sound(file=None)
+    coin_sound = pygame.mixer.Sound(file=None)
+    ammo_sound = pygame.mixer.Sound(file=None)
+    win_sound = pygame.mixer.Sound(file=None)
+    lose_sound = pygame.mixer.Sound(file=None)
+    start_sound = pygame.mixer.Sound(file=None)
     explosion_sound = pygame.mixer.Sound(file=None)
 
-# -----------------------------------------------------------------------------
-# DERIVED CONSTANTS
-# -----------------------------------------------------------------------------
 TILE_SIZE = CONFIG["TILE_SIZE"]
 GRID_ROWS = len(CUSTOM_MAP)
 GRID_COLS = len(CUSTOM_MAP[0])
@@ -111,22 +104,16 @@ clock = pygame.time.Clock()
 font = pygame.font.SysFont("arial", 20, bold=True)
 big_font = pygame.font.SysFont("arial", 40, bold=True)
 
-# -----------------------------------------------------------------------------
-# COLORS
-# -----------------------------------------------------------------------------
-WHITE  = (255, 255, 255)
-GRAY   = (150, 150, 150)
-BLACK  = (0, 0, 0)
-RED    = (255, 60, 60)
-GREEN  = (60, 255, 60)
-BLUE   = (60, 60, 255)
+WHITE = (255, 255, 255)
+GRAY = (150, 150, 150)
+BLACK = (0, 0, 0)
+RED = (255, 60, 60)
+GREEN = (60, 255, 60)
+BLUE = (60, 60, 255)
 YELLOW = (255, 255, 0)
-BROWN  = (139, 69, 19)
-GOLD   = (255, 215, 0)
+BROWN = (139, 69, 19)
+GOLD = (255, 215, 0)
 
-# -----------------------------------------------------------------------------
-# HELPER FUNCTIONS
-# -----------------------------------------------------------------------------
 def copy_map():
     """Return a fresh, deep-copied version of CUSTOM_MAP."""
     return copy.deepcopy(CUSTOM_MAP)
@@ -163,9 +150,6 @@ def will_collide_with_wall(new_x, new_y, grid, half_size):
                     return True
     return False
 
-# -----------------------------------------------------------------------------
-# PATHFINDING
-# -----------------------------------------------------------------------------
 def bfs_pathfinding(grid, start, goal):
     """
     BFS ignoring bullet logic, just walls.
@@ -186,12 +170,7 @@ def bfs_pathfinding(grid, start, goal):
                     new_path = path + [(cr, cc)]
                     if (nr, nc) == goal:
                         return new_path + [(nr, nc)]
-                    queue.append(((nr, nc), new_path))
-    return []
-
-# -----------------------------------------------------------------------------
-# PARTICLE
-# -----------------------------------------------------------------------------
+                    queue.append(((nr, nc), new_
 class Particle:
     def __init__(self, x, y, vx, vy, color, lifetime):
         self.x = x
@@ -209,10 +188,6 @@ class Particle:
     def draw(self, surface):
         pygame.draw.circle(surface, self.color, (int(self.x), int(self.y)), 3)
 
-# -----------------------------------------------------------------------------
-# PLAYER
-# -----------------------------------------------------------------------------
-class Player:
     def __init__(self, r, c):
         self.x = c * TILE_SIZE + TILE_SIZE/2
         self.y = r * TILE_SIZE + TILE_SIZE/2
@@ -265,9 +240,6 @@ class Player:
         pygame.draw.rect(surface, BLUE, rect)
         pygame.draw.rect(surface, WHITE, rect, 2)
 
-# -----------------------------------------------------------------------------
-# BULLET
-# -----------------------------------------------------------------------------
 class Bullet:
     def __init__(self, x, y, dir_r, dir_c):
         self.x = x
@@ -331,9 +303,6 @@ class Bullet:
     def draw(self, surface):
         pygame.draw.circle(surface, YELLOW, (int(self.x), int(self.y)), 4)
 
-# -----------------------------------------------------------------------------
-# ENEMY
-# -----------------------------------------------------------------------------
 class Enemy:
     """
     States: IDLE, CHASE, SEARCH
@@ -503,9 +472,7 @@ class Enemy:
         pygame.draw.rect(surface, RED, rect)
         pygame.draw.rect(surface, WHITE, rect, 2)
 
-# -----------------------------------------------------------------------------
-# BULLET / LINE-RECT INTERSECTION
-# -----------------------------------------------------------------------------
+
 def orientation(px, py, qx, qy, rx, ry):
     val = (qy - py) * (rx - qx) - (qx - px) * (ry - qy)
     if abs(val) < 1e-9:
@@ -536,17 +503,12 @@ def line_rect_intersect(x1, y1, x2, y2, rect):
             return True
     return False
 
-# -----------------------------------------------------------------------------
-# GLOBALS & GAME-STATE
-# -----------------------------------------------------------------------------
 game_over_flag = False
 def raise_player_caught():
     global game_over_flag
     game_over_flag = True
 
-# -----------------------------------------------------------------------------
-# MAIN GAME
-# -----------------------------------------------------------------------------
+
 def main():
     global game_over_flag
     game_over_flag = False
@@ -612,10 +574,8 @@ def main():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     main()  # fully restart
                     return
+
         
-        # ---------------------------------------------------------------------
-        # UPDATE
-        # ---------------------------------------------------------------------
         if game_state == "PLAY":
             current_time = pygame.time.get_ticks() // 1000
             elapsed = current_time - start_time
@@ -679,9 +639,6 @@ def main():
                 spawn_timer = 0
                 spawn_enemy_far_from_player(grid, player, enemies, free_spots)
         
-        # ---------------------------------------------------------------------
-        # DRAW
-        # ---------------------------------------------------------------------
         screen.fill(BLACK)
         
         if game_state == "MENU":
@@ -724,9 +681,6 @@ def main():
     pygame.quit()
     sys.exit()
 
-# -----------------------------------------------------------------------------
-# SPAWN ENEMY FAR FROM PLAYER
-# -----------------------------------------------------------------------------
 def spawn_enemy_far_from_player(grid, player, enemies, free_spots):
     """Pick a random free spot >= SPAWN_MIN_DISTANCE from player."""
     pr, pc = player.get_tile_pos()
@@ -740,9 +694,6 @@ def spawn_enemy_far_from_player(grid, player, enemies, free_spots):
     r, c = random.choice(candidates)
     enemies.append(Enemy(r, c))
 
-# -----------------------------------------------------------------------------
-# DRAW MAP
-# -----------------------------------------------------------------------------
 def draw_map(surface, grid, coins):
     for r in range(GRID_ROWS):
         for c in range(GRID_COLS):
@@ -767,17 +718,13 @@ def draw_map(surface, grid, coins):
         pygame.draw.ellipse(surface, GOLD, coin_rect)
         pygame.draw.ellipse(surface, WHITE, coin_rect, 2)
 
-# -----------------------------------------------------------------------------
-# GLOBAL HANDOFF
-# -----------------------------------------------------------------------------
+
 game_over_flag = False
 
 def raise_player_caught():
     global game_over_flag
     game_over_flag = True
 
-# -----------------------------------------------------------------------------
-# ENTRY POINT
-# -----------------------------------------------------------------------------
+
 if __name__ == "__main__":
     main()
