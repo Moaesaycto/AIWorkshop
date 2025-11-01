@@ -13,14 +13,14 @@ import random
 CAMERA_MODE = False  # True = Demo Mode (no game logic), False = Actual Game Mode
 
 # Game parameters
-SENSITIVITY_THRESHOLD = 40
-DETECTION_AREA = 2000
+SENSITIVITY_THRESHOLD = 60
+DETECTION_AREA = 1800
 GAME_TIMER = 60
 GREEN_LIGHT_MIN = 3
 GREEN_LIGHT_MAX = 7
 RED_LIGHT_DURATION = 5
-GRACE_RED = 0.7
-PREPARATION_TIME = 10  # Time to wait during the preparation phase
+GRACE_RED = 0.85
+PREPARATION_TIME = 5  # Time to wait during the preparation phase
 
 pygame.mixer.init()
 pygame.mixer.music.load('./assets/greenlight.mp3')
